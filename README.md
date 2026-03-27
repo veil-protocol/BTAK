@@ -4,6 +4,12 @@ Real-time attack visualization for Security Onion labs. Polls Elasticsearch for 
 
 Built for cyber range and SOC training environments where instructors need a wall-mounted display showing who is attacking what, in real time.
 
+## Demo
+
+[![BTAK Demo](https://img.youtube.com/vi/nIVoLhFXl-4/maxresdefault.jpg)](https://youtu.be/nIVoLhFXl-4)
+
+> Watch BTAK in action — 20 concurrent attackers across 7 targets with full kill chain detection.
+
 ## Features
 
 - **Real-time visualization** -- animated arcs from attacker stations to target machines, color-coded by kill chain phase
