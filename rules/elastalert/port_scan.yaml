@@ -1,0 +1,13 @@
+name: "Port Scan Detected"
+type: frequency
+index: ".ds-so-suricata-*"
+num_events: 5
+buffer_time:
+  minutes: 30
+timeframe:
+  minutes: 5
+filter:
+  - query_string:
+      query: "event_type:alert"
+alert:
+  - debug

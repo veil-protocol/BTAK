@@ -1,0 +1,95 @@
+# SOC Attack Map - Configuration
+# ──────────────────────────────────────────────────────────────
+# Copy to /opt/BTAK/config.yaml and customize.
+# Set ES_PASSWORD environment variable for credentials.
+#
+# The frontend (index.html) loads its layout from /config.json
+# which is auto-generated from THIS file. You only need to
+# edit this one file — no need to touch index.html.
+# ──────────────────────────────────────────────────────────────
+
+# Dashboard branding (shown in browser tab and header bar)
+site_name: "BTAK"
+brand: "CYBER OPERATIONS CENTER"
+
+# ─── Elasticsearch Connection ───
+# Find your SO password: sudo so-elastic-auth (on the SO box)
+# Or check: sudo cat /opt/so/saltstack/local/pillar/elasticsearch.sls
+elasticsearch:
+  host: "https://localhost:9200"       # Use localhost if poller runs on SO box
+  username: "so_elastic"               # Default SO username
+  # password: set via ES_PASSWORD env var (NEVER put it here)
+  verify_certs: false                  # SO uses self-signed certs
+
+# ─── Poller Settings ───
+poller:
+  interval_seconds: 2                  # Poll ES every N seconds
+  max_events_per_poll: 100             # Max events in the feed per cycle
+  session_decay_hours: 8               # Auto-clear cumulative data after N hours
+  events_file: "/opt/BTAK/static/events.json"
+  debug_file: "/opt/BTAK/static/debug.json"
+  archive_dir: "/opt/BTAK/static/archive"
+  clear_trigger: "/opt/BTAK/static/clear.trigger"
+
+# ─── HTTP Server ───
+server:
+  host: "0.0.0.0"
+  port: 8080                           # Use 8080 if running on SO (port 80 = so-nginx)
+                                       # Use 80 if running on a separate machine
+
+# ─── Student Attack Stations ───
+# List every student workstation with its IP and display name.
+# The name MUST start with "kali-" for per-student tracking to work.
+# The frontend auto-generates the visual layout from this list.
+students:
+  stations:
+    - ip: "192.168.1.101"
+      name: "kali-01"
+    - ip: "192.168.1.102"
+      name: "kali-02"
+    - ip: "192.168.1.103"
+      name: "kali-03"
+    - ip: "192.168.1.104"
+      name: "kali-04"
+    - ip: "192.168.1.105"
+      name: "kali-05"
+    # Add all your student stations here.
+    # Use static IPs or DHCP reservations for reliable mapping.
+
+# ─── Vulnerable Targets ───
+# List every target machine the students will attack.
+targets:
+  - ip: "192.168.1.200"
+    name: "metasploitable"
+  - ip: "192.168.1.201"
+    name: "dvwa"
+  - ip: "192.168.1.202"
+    name: "juice-shop"
+  # Add all your targets here.
+
+# ─── NETMAP Attribution (Optional) ───
+# Only enable if your lab uses iptables NETMAP to translate student
+# source IPs across VLANs. Example: student at 192.168.1.101 gets
+# NATed to 10.120.0.101 when accessing VLAN 120 targets.
+# When disabled, the poller matches students by their direct IP only.
+netmap:
+  enabled: false
+  vlans: [120, 130, 140]
+
+# ─── Infrastructure Noise Filter ───
+# IPs to exclude from the attack map (SOC internal traffic, DNS, gateways).
+# Events from these IPs are tracked in debug stats but filtered from the visual feed.
+network:
+  infrastructure_ips:
+    - "192.168.1.1"      # Default gateway
+    - "192.168.1.10"     # DNS server
+    # Add your SOC management IP, DHCP server, etc.
+
+# ─── Elasticsearch Index Patterns ───
+# Security Onion 2.4 uses the .ds- prefix (data streams).
+# For SO 2.3 or older, remove the .ds- prefix.
+# To check: curl -sk -u so_elastic:$ES_PASSWORD https://localhost:9200/_cat/indices | grep suricata
+indices:
+  suricata: ".ds-so-suricata-*"        # SO 2.4+
+  zeek: ".ds-so-zeek-*"               # SO 2.4+
+  # For SO 2.3: use "so-suricata-*" and "so-zeek-*" (no .ds- prefix)

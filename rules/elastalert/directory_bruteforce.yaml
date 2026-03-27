@@ -1,0 +1,27 @@
+name: "Directory Brute Force Detection"
+type: frequency
+index: ".ds-so-zeek-*"
+num_events: 50
+timeframe:
+  minutes: 1
+filter:
+  - bool:
+      must:
+        - wildcard:
+            log.file.path: "*http*"
+        - bool:
+            should:
+              - wildcard:
+                  message: "*gobuster*"
+              - wildcard:
+                  message: "*feroxbuster*"
+              - wildcard:
+                  message: "*ffuf*"
+              - wildcard:
+                  message: "*dirb*"
+              - wildcard:
+                  message: "*dirsearch*"
+            minimum_should_match: 1
+query_key: "src_ip"
+alert:
+  - debug

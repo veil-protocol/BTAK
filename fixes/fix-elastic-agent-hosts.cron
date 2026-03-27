@@ -1,0 +1,1 @@
+*/5 * * * * root /usr/local/bin/fix-elastic-agent-hosts.sh >> /var/log/fix-ea-hosts.log 2>&1

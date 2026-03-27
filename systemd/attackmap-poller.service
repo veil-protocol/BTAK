@@ -1,0 +1,16 @@
+[Unit]
+Description=SOC Attack Map Poller
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/btak
+EnvironmentFile=/opt/btak/.env
+ExecStart=/usr/bin/python3 /opt/btak/src/poller.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

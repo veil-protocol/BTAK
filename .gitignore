@@ -1,0 +1,12 @@
+# BTAK
+config.yaml
+.env
+*.pyc
+__pycache__/
+static/events.json
+static/debug.json
+static/archive/
+static/clear.trigger
+*.log
+.venv/
+venv/

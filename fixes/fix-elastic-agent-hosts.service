@@ -1,0 +1,12 @@
+[Unit]
+Description=Fix Elastic Agent Hostname Resolution
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/fix-elastic-agent-hosts.sh
+RemainAfterExit=false
+
+[Install]
+WantedBy=multi-user.target

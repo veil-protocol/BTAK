@@ -1,0 +1,13 @@
+name: "Brute Force Attempt"
+type: frequency
+index: ".ds-so-suricata-*"
+num_events: 10
+buffer_time:
+  minutes: 30
+timeframe:
+  minutes: 5
+filter:
+  - query_string:
+      query: "event_type:alert AND (alert.signature:*brute* OR alert.signature:*login* OR alert.category:*credential*)"
+alert:
+  - debug
